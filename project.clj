@@ -43,8 +43,8 @@
                                           {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}
 
                                :devtools {:http-root "resources/public"
-                                          :http-port 8280
-                                          }}
+                                          :http-port 8280}}
+
                          :browser-test
                          {:target :browser-test
                           :ns-regexp "-test$"
@@ -94,9 +94,9 @@
                    [day8.re-frame/re-frame-10x "1.0.2"]]
     :source-paths ["dev"]}
 
-   :prod {}
+   :prod {}}
 
-}
 
-  :prep-tasks []
-)
+
+  :prep-tasks [])
+

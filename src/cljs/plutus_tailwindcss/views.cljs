@@ -43,6 +43,7 @@
                       (min nday end-day)))]
       [:div
        [:select {:id        "date-picker-year-selector"
+                 :className "focus:outline-none"
                  :value     year
                  :on-change (fn [e]
                               (let [nyear (event-value e)
@@ -50,6 +51,7 @@
                                 (reset! date (js/Date. nyear month nday))))}
         (map #(vector :option {:value % :key (str "dp-year-" %)} %) (range 1990 2051))]
        [:select {:id        "date-picker-month-selector"
+                 :className "focus:outline-none"
                  :value     (inc month)
                  :on-change (fn [e]
                               (let [nmonth (dec (event-value e))
@@ -57,10 +59,27 @@
                                 (reset! date (js/Date. year nmonth nday))))}
         (map #(vector :option {:value % :key (str "dp-month-" %)} %) (range 1 13))]
        [:select {:id        "date-picker-day-selector"
+                 :className "focus:outline-none"
                  :value     day
                  :on-change #(reset! date (js/Date. year month (event-value %)))}
         (map #(vector :option {:value % :key (str "dp-day-" %)} %) (range 1 (+ 1 (getDaysInMonth @date))))]])))
 
+(defn styled-input [prop]
+  (fn [] [:input.px-4.py-1.bg-white.focus:outline-none.w-full prop]))
+
+(defn styled-button [prop & rest]
+  (fn [] (into [:button.text-blue-500.active:text-blue-300.focus:outline-none.p-2 prop] rest)))
+
+(defn posting [posting number]
+  (fn []
+    [:<>
+     [styled-input {:id          (str "account" number)
+                    :placeholder "Account"
+                    :type        "text"}]
+     [styled-input {:id          (str "amount" number)
+                    :placeholder "Amount"
+                    :type        "text"}]
+     [styled-button {} "+Currency"]]))
 
 ;; *******************************************************************
 ;;
@@ -84,40 +103,84 @@
 
 ;; transaction
 
+(def day-jumper [1 7 30])
+
+(defn day-jump-back [date]
+  (fn []
+    [:<>
+     (map (fn [d]
+            [styled-button
+             {:on-click #(reset! date (addDays @date (- d)))}
+             (str (- d))]) (reverse day-jumper))]))
+
+(defn day-jump-forward [date]
+  (fn []
+    [:<>
+     (map (fn [d]
+            [styled-button
+             {:on-click #(reset! date (addDays @date d))}
+             (str "+" d)]) day-jumper)]))
+
+(defn create-posting []
+  {:account ""
+   :amount 0
+   :currency ""})
+
 (defn transaction-panel []
   (let [transaction-date (r/atom (js/Date.))
         payee (r/atom "")
         description (r/atom "")
-        transactions (r/atom [])]
+        tags (r/atom [""])
+        postings (r/atom [(create-posting) (create-posting)])
+        currencies (re-frame/subscribe [::subs/currencies])
+        selected-currency (re-frame/subscribe [::subs/selected-currency])]
     (fn []
-      [:div.flex.flex-col
-       [:h2.text-xl.mx-4 "Preview"]
-       [:pre.bg-white.p-2.my-1.mx-4.rounded-md
-        (gstring/format "%s \"%s\" \"%s\"" (formatDate @transaction-date "yyyy-MM-dd") @payee @description)]
+      [:div.flex.flex-col.md:flex-row
        [:div
-        [:label "Transaction date"]
-        [date-picker transaction-date]
-        [:button.text-blue-500.active:text-blue-300.focus:outline-none
-         {:on-click #(reset! transaction-date (js/Date.))}
-         "Today"]
-        [:button.text-blue-500.active:text-blue-300.focus:outline-none
-         {:on-click #(reset! transaction-date (addDays (js/Date.) -1))}
-         "Yesterday"]]
-       [:div.flex.flex-col.divide-y
-        [:input.px-4.py-1.bg-white.focus:outline-none {:id          "payee-input"
-                                                       :placeholder "Payee"
-                                                       :type        "text"
-                                                       :on-blur     #(reset! payee (event-value %))}]
-        [:input.px-4.py-1.bg-white.focus:outline-none {:id          "description-input"
-                                                       :type        "text"
-                                                       :placeholder "Description"
-                                                       :on-blur     #(reset! description (event-value %))}]]])))
+        {:className "md:w-9/12 md:mr-4"}
+        [:h2.text-xl.mx-4 "Preview"]
+        [:pre.bg-white.p-2.my-1.mx-4.rounded-md.md:h-auto
+         (gstring/format "%s \"%s\" \"%s\"" (formatDate @transaction-date "yyyy-MM-dd") @payee @description)]]
+       [:div
+        {:className "md:w-1/4"}
+        [:div.bg-white
+         [:div.flex.flex-row.md:flex-col.px-4.py-1
+          [:label.text-gray-400 "Transaction date"]
+          [:div.ml-auto.md:ml-0
+           [date-picker transaction-date]]]
+         [:div.flex.flex-row.md:flex-col.lg:flex-row.justify-center
+          [:div
+           [day-jump-back transaction-date]]
+          [:div
+           [styled-button
+            {:on-click #(reset! transaction-date (js/Date.))}
+            "Today"]]
+          [:div [day-jump-forward transaction-date]]]]
+        [:div.divide-y
+         [styled-input {:id          "payee-input"
+                        :placeholder "Payee"
+                        :type        "text"
+                        :on-blur     #(reset! payee (event-value %))}]
+         [styled-input {:id          "description-input"
+                        :type        "text"
+                        :placeholder "Description"
+                        :on-blur     #(reset! description (event-value %))}]
+         (map-indexed (fn [tag-index tag-value]
+                        [styled-input {:id          (str "tag-input" tag-index)
+                                       :key         (str "tag-input" tag-index)
+                                       :type        "text"
+                                       :value       tag-value
+                                       :placeholder (str "Tag " tag-value)}]) @tags)]
+        [:div.mt-6
+         [:select.focus:outline-none {:value @selected-currency
+                                      :on-change #(re-frame/dispatch [::events/set-selected-currency (event-value %)])}
+          (map (fn [c] [:option {:value c :key (str "currency-" c)} (str c)]) @currencies)]]]])))
 
 (defmethod routes/panels :transaction-panel [] [transaction-panel])
 
 ;; main
 
 (defn main-panel []
-  [:div.container.mx-auto.max-w-sm.bg-gray-200.py-4.h-screen
+  [:div.container.mx-auto.bg-gray-200.py-4.md:p-4.h-screen
    (let [active-panel (re-frame/subscribe [::subs/active-panel])]
      (routes/panels @active-panel))])

@@ -11,3 +11,13 @@
  ::active-panel
  (fn [db _]
    (:active-panel db)))
+
+(re-frame/reg-sub
+  ::currencies
+  (fn [db _]
+    (:currency db)))
+
+(re-frame/reg-sub
+  ::selected-currency
+  (fn [db _]
+    (:selected-currency db)))
