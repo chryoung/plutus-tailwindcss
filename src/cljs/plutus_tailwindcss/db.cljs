@@ -2,5 +2,4 @@
 
 (def default-db
   {:name "re-frame"
-   :currency ["CNY" "USD" "JPY"]
-   :selected-currency "CNY"})
+   :currency ["CNY" "USD" "JPY"]})
