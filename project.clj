@@ -16,6 +16,9 @@
             [lein-shell "0.5.0"]
             [lein-pprint "1.3.2"]]
 
+  :repositories [["central" "http://maven.aliyun.com/nexus/content/groups/public"]
+                 ["clojars" "https://mirrors.tuna.tsinghua.edu.cn/clojars/"]]
+
   :min-lein-version "2.9.0"
 
   :jvm-opts ["-Xmx1G"]
@@ -99,4 +102,10 @@
 
 
   :prep-tasks [])
+
+;; Disable leiningen strict repository check
+;; https://github.com/clj-commons/pomegranate
+(require 'cemerick.pomegranate.aether)
+(cemerick.pomegranate.aether/register-wagon-factory!
+ "http" #(org.apache.maven.wagon.providers.http.HttpWagon.))
 
