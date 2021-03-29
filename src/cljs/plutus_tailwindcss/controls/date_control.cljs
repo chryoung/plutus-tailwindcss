@@ -1,7 +1,7 @@
 (ns plutus-tailwindcss.controls.date-control
   (:require
    [plutus-tailwindcss.helper :refer [event-value]]
-   [plutus-tailwindcss.controls.styled-controls :refer [styled-button]]
+   [plutus-tailwindcss.controls.styled-controls :refer [button]]
    ["date-fns/getDaysInMonth" :as getDaysInMonth]
    ["date-fns/addDays" :as addDays]))
 
@@ -45,7 +45,7 @@
   (fn []
     [:<>
      (map (fn [d]
-            [styled-button
+            [button
              {:key (str "day-jump-back-" d)
               :on-click #(reset! date (addDays @date (- d)))}
              (str (- d))]) (reverse day-jumper))]))
@@ -54,7 +54,7 @@
   (fn []
     [:<>
      (map (fn [d]
-            [styled-button
+            [button
              {:key (str "day-jump-forward-" d)
               :on-click #(reset! date (addDays @date d))}
              (str "+" d)]) day-jumper)]))
@@ -69,7 +69,7 @@
     [:div
      [day-jump-back date]]
     [:div
-     [styled-button
+     [button
       {:on-click #(reset! date (js/Date.))}
       "Today"]]
     [:div [day-jump-forward date]]]])
