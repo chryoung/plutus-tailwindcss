@@ -149,6 +149,20 @@ Opening the app in your browser starts a
 [ClojureScript browser REPL](https://clojurescript.org/reference/repl#using-the-browser-as-an-evaluation-environment),
 to which you may now connect.
 
+#### Maven and Clojars mirrors
+
+For the Chinese developers, to speed up the building process, please add the following key/value to `project.clj`.
+
+```clojure
+   :mirrors {"central"  {:name "Ali Central Public"
+                         :url "https://maven.aliyun.com/nexus/content/groups/public/"
+                         :repo-manager true}
+             #"clojars" {:name "TsingHua Clojar"
+                         :url "https://mirrors.tuna.tsinghua.edu.cn/clojars"
+                         :repo-manager true}}
+
+```
+
 #### Connecting to the browser REPL from Emacs with CIDER
 
 Connect to the browser REPL:
