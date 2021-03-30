@@ -14,6 +14,7 @@
                      :value       tag-value
                      :on-change   (fn [e] (swap! tags assoc tag-index (h/event-value e)))}]
                    (when (> (count @tags) 1) [styled/button {:on-click #(swap! tags h/remove-at tag-index)} "-"])
-                   [styled/button {:on-click #(swap! tags h/insert-after tag-index "")} "+"]])]
+                   [:div.mr-3
+                    [styled/button {:on-click #(swap! tags h/insert-after tag-index "")} "+"]]])]
       [:div.tags-controller
        (h/doall-map-indexed entry @tags)])))

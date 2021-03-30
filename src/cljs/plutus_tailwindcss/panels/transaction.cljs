@@ -12,44 +12,45 @@
    [plutus-tailwindcss.controls.date-control :refer [date-control]]))
 
 (defn transaction-panel []
-  (let [transaction-date  (r/atom (js/Date.))
-        transaction-state (r/atom "*")
-        payee             (r/atom "")
-        description       (r/atom "")
-        tags              (r/atom [""])
-        currencies        (re-frame/subscribe [::subs/currencies])
-        default-currency  (first @currencies)
-        postings          (r/atom [(create-posting default-currency) (create-posting default-currency)])
-        selected-currency (r/atom default-currency)]
+  (let [transaction-date   (r/atom (js/Date.))
+        transaction-status (r/atom "*")
+        payee              (r/atom "")
+        description        (r/atom "")
+        tags               (r/atom [""])
+        currencies         (re-frame/subscribe [::subs/currencies])
+        default-currency   (first @currencies)
+        postings           (r/atom [(create-posting default-currency) (create-posting default-currency)])
+        selected-currency  (r/atom default-currency)]
     (fn []
       [:div.flex.flex-col.md:flex-row
        [:div
         {:className "md:w-4/6 md:mr-4"}
         [:h2.text-xl.mx-4 "Preview"]
         [transaction-preview {:date        transaction-date
-                              :state       transaction-state
+                              :status      transaction-status
                               :payee       payee
                               :description description
                               :tags        tags
                               :postings    postings}]]
-       [:div.editor
-        {:className "md:w-2/6"}
-        [:div.transation-header.bg-white
+       [:div
+        {:className "editor md:w-2/6"}
+        [:div.transation-header.bg-white.divide-y
          [date-control {:date  transaction-date
                         :label "Transaction date"}]
-         [:div
-          [styled/button {:on-click #(reset! transaction-state "*")} "*"]
-          [styled/button {:on-click #(reset! transaction-state "!")} "!"]]
+         [:div.flex.justify-center.mx-4.my-1
+          [:span.mr-auto.text-gray-400 "Status"]
+          [styled/button {:on-click #(reset! transaction-status "*")} "*"]
+          [styled/button {:on-click #(reset! transaction-status "!")} "!"]]
          [:div.divide-y
           [styled/input {:id          "payee-input"
-                         :placeholder "Payee"
                          :type        "text"
+                         :placeholder "Payee"
                          :value       @payee
                          :on-change   #(reset! payee (h/event-value %))}]
           [styled/input {:id          "description-input"
                          :type        "text"
-                         :value       @description
                          :placeholder "Description"
+                         :value       @description
                          :on-change   #(reset! description (h/event-value %))}]
           [tags-control tags]]]
         [:div.mt-6

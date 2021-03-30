@@ -58,8 +58,8 @@
 (defn date-control [{:keys [date label]}]
   [:div
    [:div.flex.flex-row.md:flex-col.px-4.py-1
-    [:label.text-gray-400 label]
-    [:div.ml-auto.md:ml-0
+    [:span.mr-auto.text-gray-400 label]
+    [:div.md:ml-0
      [date-picker date]]]
    [:div.flex.flex-row.justify-center
     [:div
