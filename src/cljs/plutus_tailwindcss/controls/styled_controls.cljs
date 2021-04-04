@@ -8,3 +8,6 @@
 
 (defn select [prop & rest]
   (into [:select.focus:outline-none.p-2.m-1 prop] rest))
+
+(defn nav-button [prop & rest]
+  (into [:button.block.focus:outline-none.w-full prop rest]))

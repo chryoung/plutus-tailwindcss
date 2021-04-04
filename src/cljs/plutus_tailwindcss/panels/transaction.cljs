@@ -9,7 +9,8 @@
    [plutus-tailwindcss.display.transaction :refer [transaction-preview]]
    [plutus-tailwindcss.controls.styled-controls :as styled]
    [plutus-tailwindcss.controls.tags-control :refer [tags-control]]
-   [plutus-tailwindcss.controls.date-control :refer [date-control]]))
+   [plutus-tailwindcss.controls.date-control :refer [date-control]]
+   [plutus-tailwindcss.controls.posting-control :refer [posting-control]]))
 
 (defn transaction-panel []
   (let [transaction-date   (r/atom (js/Date.))
@@ -19,8 +20,7 @@
         tags               (r/atom [""])
         currencies         (re-frame/subscribe [::subs/currencies])
         default-currency   (first @currencies)
-        postings           (r/atom [(create-posting default-currency) (create-posting default-currency)])
-        selected-currency  (r/atom default-currency)]
+        postings           (r/atom [(create-posting default-currency) (create-posting default-currency)])]
     (fn []
       [:div.flex.flex-col.md:flex-row
        [:div
@@ -52,10 +52,14 @@
                          :placeholder "Description"
                          :value       @description
                          :on-change   #(reset! description (h/event-value %))}]
-          [tags-control tags]]]
-        [:div.mt-6
-         [:select.focus:outline-none {:value     @selected-currency
-                                      :on-change #(reset! selected-currency (h/event-value %))}
-          (map (fn [c] [:option {:value c :key (str "currency-" c)} (str c)]) @currencies)]]]])))
+          [tags-control tags]
+          [posting-control postings]
+          ] ;; End of :div.divide-y
+         ] ;; End of :div.transation-header.bg-white.divide-y
+        ] ;; End of :div.editor.md:w-2/6
+       ] ;; End of :div.flex.flex-col.md:flex-row
+      ) ;; End of fn
+    ) ;; End of let
+  ) ;; End of defn transaction-panel
 
 (defmethod routes/panels :transaction-panel [] [transaction-panel])

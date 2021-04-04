@@ -10,6 +10,6 @@
                                   ::currency]))
 
 (defn create-posting [currency]
-  {:account ""
+  {:account "Account"
    :amount 0
    :currency currency})

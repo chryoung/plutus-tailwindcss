@@ -1,18 +1,24 @@
 (ns plutus-tailwindcss.subs
   (:require
-   [re-frame.core :as re-frame]))
+   [re-frame.core :refer [reg-sub]]))
 
-(re-frame/reg-sub
+(reg-sub
  ::name
  (fn [db]
    (:name db)))
 
-(re-frame/reg-sub
+(reg-sub
  ::active-panel
  (fn [db _]
    (:active-panel db)))
 
-(re-frame/reg-sub
+(reg-sub
   ::currencies
   (fn [db _]
-    (:currency db)))
+    (:currencies db)))
+
+(reg-sub
+ ::accounts
+ (fn [db _]
+   (:accounts db))
+ )
