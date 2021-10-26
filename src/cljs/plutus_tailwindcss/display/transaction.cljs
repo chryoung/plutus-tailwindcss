@@ -1,7 +1,7 @@
 (ns plutus-tailwindcss.display.transaction
   (:require
    [plutus-tailwindcss.helper :as h]
-   ["date-fns/format" :as formatDate]
+   ["date-fns" :rename {format formatDate}]
    [clojure.string :as clstr]
    [plutus-tailwindcss.formatter :as fmt]))
 

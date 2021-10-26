@@ -1,11 +1,11 @@
 (defproject plutus-tailwindcss "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.10.3"]
-                 [org.clojure/clojurescript "1.10.773"
+                 [org.clojure/clojurescript "1.10.879"
                   :exclusions [com.google.javascript/closure-compiler-unshaded
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
-                 [thheller/shadow-cljs "2.11.24"]
-                 [reagent "1.0.0"]
+                 [thheller/shadow-cljs "2.15.12"]
+                 [reagent "1.1.0"]
                  [re-frame "1.2.0"]
                  [day8.re-frame/tracing "0.6.2"]
                  [bidi "2.1.6"]

@@ -2,8 +2,7 @@
   (:require
    [plutus-tailwindcss.helper :refer [event-value]]
    [plutus-tailwindcss.controls.styled-controls :refer [button]]
-   ["date-fns/getDaysInMonth" :as getDaysInMonth]
-   ["date-fns/addDays" :as addDays]))
+   ["date-fns" :refer (getDaysInMonth addDays)]))
 
 (def day-jumper [1 7 30])
 
