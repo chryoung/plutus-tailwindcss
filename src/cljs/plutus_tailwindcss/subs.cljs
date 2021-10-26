@@ -22,3 +22,8 @@
  (fn [db _]
    (:accounts db))
  )
+
+(reg-sub
+ ::transaction
+ (fn [db _]
+   (:transaction db)))
